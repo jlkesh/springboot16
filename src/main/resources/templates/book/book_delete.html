@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="fragments.html :: header"></head>
+<body>
+<section th:include="fragments.html :: navbar"></section>
+<div class="offset-2">
+    <div class="col-md-8">
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item">id : <span th:text="${book.id}"></span></li>
+                <li class="list-group-item">name : <span th:text="${book.name}"></span></li>
+                <li class="list-group-item">pageCount : <span th:text="${book.pageCount}"></span></li>
+                <li class="list-group-item">author : <span th:text="${book.author}"></span></li>
+            </ul>
+            <h2>Are you sure delete this book</h2>
+            <form method="post">
+                <button type="submit" class="btn btn-danger">Yes</button>
+                <a th:href="@{/book}" class="btn btn-success">Go Back</a>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="fragments.html :: js_files"></div>
+</body>
+</html>

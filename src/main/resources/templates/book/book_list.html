@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments.html :: header"></head>
+
+<body>
+<section th:include="fragments.html :: navbar"></section>
+<section class="m-4">
+    <a href="/book/add" class="btn btn-success mb-4 text-white">➕ Add</a>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Page Count</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.name}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.pageCount}"></td>
+            <td>
+                <a th:href="@{'/book/delete/' + ${book.id}}" class="btn btn-danger">Delete</a>
+                ||
+                <a th:href="@{'/book/update/' + ${book.id}}" class="btn btn-warning">Update</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+<div th:include="fragments.html :: js_files"></div>
+</body>
+</html>

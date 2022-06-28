@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="fragments.html :: header"></head>
+<body>
+<section th:include="fragments.html :: navbar"></section>
+<div class="row">
+    <div class="offset-2 col-md-8">
+        <form method="post" action="/book/update">
+
+            <div class="form-group">
+                <input type="hidden" name="id" class="form-control" th:value="${book.id}"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="name" class="form-control" th:value="${book.name}"
+                       placeholder="Book name Please"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="author" class="form-control" th:value="${book.author}" placeholder="Author">
+            </div>
+            <div class="form-group">
+                <input type="number" name="pageCount" class="form-control" th:value="${book.pageCount}"
+                       placeholder="Page Count">
+            </div>
+            <a th:href="@{/book}" class="btn btn-success">Go Back</a>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+
+    </div>
+
+</div>
+<div th:include="fragments.html :: js_files"></div>
+</body>
+</html>
