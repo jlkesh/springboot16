@@ -1,30 +1,41 @@
 package uz.jl.library.controller;
 
-import lombok.*;
+import com.github.javafaker.Faker;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import uz.jl.library.domains.Book;
 import uz.jl.library.exception.NotFoundException;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/book")
+@RequiredArgsConstructor
 public class BookController {
 
-    private final List<Book> books = new ArrayList<>();
+    private List<Book> books = new ArrayList<>();
+    private final Faker faker;
 
-    private final AtomicLong counter = new AtomicLong(1);
-
-    {
-        books.add(new Book(counter.getAndIncrement(), "Daftar xoshiyasidagi bitiklar", 300, "O'tkir Hoshimov"));
+    @PostConstruct
+    public void init() {
+        com.github.javafaker.Book book = faker.book();
+        for (int i = 0; i < 55; i++) {
+            books.add(Book.builder()
+                    .title(book.title())
+                    .author(book.author())
+                    .genre(book.genre())
+                    .publisher(book.publisher())
+                    .build());
+        }
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getAll(Model model) {
+    public String getAll(@RequestParam String search , Model model) {
         model.addAttribute("books", books);
         return "book/book_list";
     }
@@ -36,13 +47,12 @@ public class BookController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String add(@ModelAttribute Book book) {
-        book.setId(counter.getAndIncrement());
         books.add(book);
         return "redirect:/book";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deletePage(@PathVariable Long id, Model model) {
+    public String deletePage(@PathVariable UUID id, Model model) {
         Book searchingBook = books.stream()
                 .filter(book -> book.getId().equals(id)
                 ).findFirst().orElseThrow(() -> {
@@ -53,13 +63,13 @@ public class BookController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable UUID id) {
         books.removeIf(book -> book.getId().equals(id));
         return "redirect:/book";
     }
 
     @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
-    public String updatePage(@PathVariable Long id, Model model) {
+    public String updatePage(@PathVariable UUID id, Model model) {
         Book searchingBook = books.stream()
                 .filter(book ->
                         book.getId().equals(id)
@@ -75,23 +85,13 @@ public class BookController {
         books.stream()
                 .filter(book -> book.getId().equals(dto.getId()))
                 .forEach(book -> {
-                    book.setName(dto.getName());
+                    book.setTitle(dto.getTitle());
+                    book.setGenre(dto.getGenre());
                     book.setAuthor(dto.getAuthor());
-                    book.setPageCount(dto.getPageCount());
+                    book.setPublisher(dto.getPublisher());
                 });
         return "redirect:/book";
     }
 
 }
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-class Book {
-    private Long id;
-    private String name;
-    private Integer pageCount;
-    private String author;
-}

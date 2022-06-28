@@ -12,16 +12,20 @@
             </div>
 
             <div class="form-group">
-                <input type="text" name="name" class="form-control" th:value="${book.name}"
-                       placeholder="Book name Please"/>
+                <input type="text" name="title" class="form-control" th:value="${book.title}"
+                       placeholder="Book title"/>
             </div>
 
             <div class="form-group">
                 <input type="text" name="author" class="form-control" th:value="${book.author}" placeholder="Author">
             </div>
             <div class="form-group">
-                <input type="number" name="pageCount" class="form-control" th:value="${book.pageCount}"
-                       placeholder="Page Count">
+                <input type="text" name="genre" class="form-control" th:value="${book.genre}"
+                       placeholder="Genre">
+            </div>
+            <div class="form-group">
+                <input type="text" name="publisher" class="form-control" th:value="${book.publisher}"
+                       placeholder="Publisher">
             </div>
             <a th:href="@{/book}" class="btn btn-success">Go Back</a>
             <button type="submit" class="btn btn-primary">Update</button>

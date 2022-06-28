@@ -6,22 +6,24 @@
 <section th:include="fragments.html :: navbar"></section>
 <section class="m-4">
     <a href="/book/add" class="btn btn-success mb-4 text-white">➕ Add</a>
-    <table class="table">
+    <table class="table table-striped">
         <thead class="thead-dark">
         <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th>Title</th>
             <th>Author</th>
-            <th>Page Count</th>
+            <th>Genre</th>
+            <th>Publisher</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="book : ${books}">
-            <td th:text="${book.id}"></td>
-            <td th:text="${book.name}"></td>
+        <tr th:each="book, counter : ${books}">
+            <td th:text="${counter.count}"></td>
+            <td th:text="${book.title}"></td>
             <td th:text="${book.author}"></td>
-            <td th:text="${book.pageCount}"></td>
+            <td th:text="${book.genre}"></td>
+            <td th:text="${book.publisher}"></td>
             <td>
                 <a th:href="@{'/book/delete/' + ${book.id}}" class="btn btn-danger">Delete</a>
                 ||

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>404</title>
+    <style>
+        h1 {
+            margin: 100px auto;
+            font-size: 100px;
+            text-decoration: #615a5a;
+            text-align: center;
+            font-family: Arial;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+
+        .path {
+            text-align: center;
+        }
+
+        * {
+            overflow: hidden;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            background-image: url("static/img/404.png");
+        }
+    </style>
+</head>
+<body>
+<h1>400</h1>
+<p class="error" th:text="${message}"></p>
+<p class="path" th:text="${path}"></p>
+</body>
+</html>
