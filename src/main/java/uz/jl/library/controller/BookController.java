@@ -11,6 +11,7 @@ import uz.jl.library.exception.NotFoundException;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -35,8 +36,24 @@ public class BookController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getAll(@RequestParam String search , Model model) {
-        model.addAttribute("books", books);
+    public String getAll(
+            @RequestParam Optional<String> search,
+            @RequestParam(name = "page") Optional<Integer> pageOptional,
+            @RequestParam(name = "limit") Optional<Integer> limitOptional,
+            Model model) {
+        int page = pageOptional.orElse(0);
+        int limit = limitOptional.orElse(10);
+        List<Book> bookList = books.stream().filter(book -> {
+                    String param = search.orElse("").toLowerCase();
+                    return book.getTitle().toLowerCase().contains(param) ||
+                            book.getAuthor().toLowerCase().contains(param) ||
+                            book.getGenre().toLowerCase().contains(param) ||
+                            book.getPublisher().toLowerCase().contains(param);
+                })
+                .skip((long) page * limit)
+                .limit(limit)
+                .toList();
+        model.addAttribute("books", bookList);
         return "book/book_list";
     }
 
