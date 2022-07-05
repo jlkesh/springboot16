@@ -5,7 +5,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,9 +23,10 @@ public class LibraryApplication {
     CommandLineRunner runner() {
         return (args -> {
             try {
-                Path uploads = Paths.get("/uploads");
-                if (Files.isDirectory(uploads) && !Files.exists(uploads)) {
-                    Files.createDirectories(uploads);
+
+                Path path = Paths.get("/apps/library/uploads");
+                if ( !Files.exists(path)) {
+                    Files.createDirectories(path);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
