@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments.html :: header"></head>
+<body>
+<section th:include="fragments.html :: navbar"></section>
+<div class="row">
+    <div class="offset-2 col-md-8">
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>File</label>
+                <input type="file" name="file" class="form-control"/>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+
+    </div>
+
+</div>
+<div th:include="fragments.html :: js_files"></div>
+</body>
+</html>

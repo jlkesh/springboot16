@@ -57,10 +57,10 @@ public class BookController {
         return "book/book_list";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addPage() {
-        return "book/book_add";
-    }
+//    @RequestMapping(value = "/add", method = RequestMethod.GET)
+//    public String addPage() {
+//        return "book/book_add";
+//    }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String add(@ModelAttribute Book book) {

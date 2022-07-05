@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments.html :: header"></head>
+
+<body>
+<section th:include="fragments.html :: navbar"></section>
+<div class="row">
+    <div class="offset-2 col-md-8">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Content</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="file, counter : ${files}">
+                <td th:text="${counter.count}"></td>
+                <td th:text="${file.originalName}"></td>
+                <td th:text="${file.size}"></td>
+                <td th:text="${file.contentType}"></td>
+                <td>
+                    <a th:href="@{ ${file.path}}" class="btn btn-info">View</a>
+                    ||
+                    <a th:href="@{${file.path}}" class="btn btn-secondary">Download</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+<div th:include="fragments.html :: js_files"></div>
+</body>
+</html>
