@@ -19,18 +19,10 @@ public class LibraryApplication {
         SpringApplication.run(LibraryApplication.class, args);
     }
 
-    @Bean
+//    @Bean
     CommandLineRunner runner() {
         return (args -> {
-            try {
 
-                Path path = Paths.get("/apps/library/uploads");
-                if ( !Files.exists(path)) {
-                    Files.createDirectories(path);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         });
     }
 

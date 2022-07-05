@@ -1,9 +1,11 @@
 package uz.jl.library.controller;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -13,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uz.jl.library.dto.UploadsDTO;
 import uz.jl.library.exception.NotFoundException;
 
-import java.io.File;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -23,6 +25,20 @@ import java.util.List;
 @RequestMapping("/uploads")
 public class FileStorageController {
     static List<UploadsDTO> uploadsDTOList = new ArrayList<>();
+
+
+    private final Path rootPath;
+
+    public FileStorageController(@Value("${file.upload.path}") String uploadPath) {
+        this.rootPath = Paths.get(uploadPath);
+    }
+
+    @PostConstruct
+    public void init() throws IOException {
+        if (!Files.exists(rootPath)) {
+            Files.createDirectories(rootPath);
+        }
+    }
 
 
     @GetMapping
@@ -41,7 +57,9 @@ public class FileStorageController {
         });
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, uploadsDTO.getContentType(),
+                .contentType(MediaType.parseMediaType(uploadsDTO.getContentType()))
+                .contentLength(uploadsDTO.getSize())
+                .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + uploadsDTO.getOriginalName() + "\""
                 )
                 .body(resource);
@@ -67,7 +85,7 @@ public class FileStorageController {
                 .generatedName(generatedName)
                 .path(path)
                 .build();
-        Path uploadPath = Paths.get("/apps/library/uploads").resolve(generatedName);
+        Path uploadPath = rootPath.resolve(generatedName);
         Files.copy(multipartFile.getInputStream(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
         uploadsDTOList.add(dto);
         return "redirect:/uploads/files";
