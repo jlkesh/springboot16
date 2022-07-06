@@ -2,9 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="fragments.html :: header"></head>
 
-<body>
+<body style="overflow-y: scroll;">
 <section th:include="fragments.html :: navbar"></section>
-<section class="m-4">
+<div class="m-4">
     <!--    <a href="/book/add" class="btn btn-success mb-4 text-white">➕ Add</a>-->
 
 
@@ -14,7 +14,8 @@
     </button>
 
     <!-- Modal -->
-    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -87,61 +88,83 @@
             <!--                </div>-->
         </div>
     </div>
-    </div>
+</div>
+
+<!-- Book List -->
+
+<div class="row m-4">
+    <th:block th:each="book : ${books}">
+        <div class="col-2">
+            <div class="card p-2" style="width: 100%">
+                <img class="card-img-top" th:src="${book.cover.path}" width="140" height="250" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${book.name}"></h5>
+                    <i style="display:block;">author : <i th:text="${book.author}"></i></i>
+                    <i style="display:block;">description : <i th:text="${book.description}"></i></i>
+                    <i style="display:block;">genre : <i th:text="${book.genre}"></i></i>
+                    <i style="display:block;">language : <i th:text="${book.language}"></i></i>
+                    <i style="display:block;">pageCount : <i th:text="${book.pageCount}"></i></i>
+                    <i style="display:block;">downloadCount : <i th:text="${book.downloadCount}"></i></i>
+                    <a th:href="@{${book.cover.path}}">Download Cover</a>
+                    <br />
+                    <a th:href="@{${book.file.path}}" >Download Book</a>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</div>
+<!--    <table class="table table-striped">-->
+<!--        <thead class="thead-dark">-->
+<!--        <tr>-->
+<!--            <th>ID</th>-->
+<!--            <th>Name</th>-->
+<!--            <th>author</th>-->
+<!--            <th>genre</th>-->
+<!--            <th>description</th>-->
+<!--            <th>language</th>-->
+<!--            <th>pages</th>-->
+<!--            <th>downloads</th>-->
+<!--            <th>-</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
 
 
-    <table class="table table-striped">
-        <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>author</th>
-            <th>genre</th>
-            <th>description</th>
-            <th>language</th>
-            <th>pages</th>
-            <th>downloads</th>
-            <th>-</th>
-        </tr>
-        </thead>
-        <tbody>
+<!--        <tr th:each="book, counter : ${books}">-->
+<!--            <td th:text="${counter.count}"></td>-->
+<!--            <td th:text="${book.name}"></td>-->
+<!--            <td th:text="${book.author}"></td>-->
+<!--            <td th:text="${book.genre}"></td>-->
+<!--            <td th:text="${book.description}"></td>-->
+<!--            <td th:text="${book.language}"></td>-->
+<!--            <td th:text="${book.pageCount}"></td>-->
+<!--            <td th:text="${book.downloadCount}"></td>-->
+<!--            <td>-->
+<!--                <a th:href="@{'/book/delete/' + ${book.id}}" class="btn btn-danger">Delete</a>-->
+<!--                ||-->
+<!--                <a th:href="@{'/book/update/' + ${book.id}}" class="btn btn-warning">Update</a>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<nav aria-label="...">
+    <ul class="pagination">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item active">
+            <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>
 
 
-        <tr th:each="book, counter : ${books}">
-            <td th:text="${counter.count}"></td>
-            <td th:text="${book.name}"></td>
-            <td th:text="${book.author}"></td>
-            <td th:text="${book.genre}"></td>
-            <td th:text="${book.description}"></td>
-            <td th:text="${book.language}"></td>
-            <td th:text="${book.pageCount}"></td>
-            <td th:text="${book.downloadCount}"></td>
-            <td>
-                <a th:href="@{'/book/delete/' + ${book.id}}" class="btn btn-danger">Delete</a>
-                ||
-                <a th:href="@{'/book/update/' + ${book.id}}" class="btn btn-warning">Update</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <nav aria-label="...">
-        <ul class="pagination">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item active">
-                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
-
-
-</section>
+</div>
 <div th:include="fragments.html :: js_files"></div>
 </body>
 </html>

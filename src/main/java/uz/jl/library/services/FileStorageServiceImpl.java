@@ -45,7 +45,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     @Transactional
-    public void upload(MultipartFile multipartFile) {
+    public Uploads upload(MultipartFile multipartFile) {
         try {
             String contentType = multipartFile.getContentType();
             String originalFilename = multipartFile.getOriginalFilename();
@@ -65,6 +65,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             Path uploadPath = rootPath.resolve(generatedName);
             repository.save(uploads);
             Files.copy(multipartFile.getInputStream(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
+            return uploads;
         } catch (IOException e) {
             throw new RuntimeException("Something wrong try again");
         }

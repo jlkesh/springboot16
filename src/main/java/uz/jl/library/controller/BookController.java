@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import uz.jl.library.domains.Book;
 import uz.jl.library.dto.BookCreateDTO;
 import uz.jl.library.dto.BookUpdateDTO;
@@ -33,8 +34,10 @@ public class BookController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String add(@ModelAttribute BookCreateDTO dto) {
-        bookService.create(dto);
+    public String add(@ModelAttribute BookCreateDTO dto,
+                      @RequestParam("cover") MultipartFile cover,
+                      @RequestParam("file") MultipartFile file) {
+        bookService.create(dto, cover, file);
         return "redirect:/book";
     }
 

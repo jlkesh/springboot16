@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface FileStorageService {
 
-    void upload(MultipartFile multipartFile);
+    Uploads upload(MultipartFile multipartFile);
 
     ResponseEntity<Resource> download(@NonNull String fileName);
 
