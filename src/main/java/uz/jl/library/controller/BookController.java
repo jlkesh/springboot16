@@ -1,112 +1,64 @@
 package uz.jl.library.controller;
 
-import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import uz.jl.library.domains.Book;
-import uz.jl.library.exception.NotFoundException;
+import uz.jl.library.dto.BookCreateDTO;
+import uz.jl.library.dto.BookUpdateDTO;
+import uz.jl.library.enums.Language;
+import uz.jl.library.services.BookService;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.OptionalInt;
 
 @Controller
 @RequestMapping("/book")
 @RequiredArgsConstructor
 public class BookController {
 
-    private List<Book> books = new ArrayList<>();
-    private final Faker faker;
-
-    @PostConstruct
-    public void init() {
-        com.github.javafaker.Book book = faker.book();
-        for (int i = 0; i < 55; i++) {
-            books.add(Book.builder()
-                    .title(book.title())
-                    .author(book.author())
-                    .genre(book.genre())
-                    .publisher(book.publisher())
-                    .build());
-        }
-    }
+    private final BookService bookService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getAll(
             @RequestParam Optional<String> search,
-            @RequestParam(name = "page") Optional<Integer> pageOptional,
-            @RequestParam(name = "limit") Optional<Integer> limitOptional,
+            @RequestParam(name = "page") Optional<Integer> page,
+            @RequestParam(name = "limit") Optional<Integer> limit,
             Model model) {
-        int page = pageOptional.orElse(0);
-        int limit = limitOptional.orElse(10);
-        List<Book> bookList = books.stream().filter(book -> {
-                    String param = search.orElse("").toLowerCase();
-                    return book.getTitle().toLowerCase().contains(param) ||
-                            book.getAuthor().toLowerCase().contains(param) ||
-                            book.getGenre().toLowerCase().contains(param) ||
-                            book.getPublisher().toLowerCase().contains(param);
-                })
-                .skip((long) page * limit)
-                .limit(limit)
-                .toList();
-        model.addAttribute("books", bookList);
+        model.addAttribute("books", bookService.findAll(page, limit));
+        model.addAttribute("genres", Book.Genre.values());
+        model.addAttribute("languages", Language.values());
         return "book/book_list";
     }
 
-//    @RequestMapping(value = "/add", method = RequestMethod.GET)
-//    public String addPage() {
-//        return "book/book_add";
-//    }
-
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String add(@ModelAttribute Book book) {
-        books.add(book);
+    public String add(@ModelAttribute BookCreateDTO dto) {
+        bookService.create(dto);
         return "redirect:/book";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deletePage(@PathVariable UUID id, Model model) {
-        Book searchingBook = books.stream()
-                .filter(book -> book.getId().equals(id)
-                ).findFirst().orElseThrow(() -> {
-                    throw new NotFoundException("Book not found with given id '%s'".formatted(id));
-                });
-        model.addAttribute("book", searchingBook);
+    public String deletePage(@PathVariable Long id, Model model) {
+        model.addAttribute("book", bookService.get(id));
         return "book/book_delete";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public String delete(@PathVariable UUID id) {
-        books.removeIf(book -> book.getId().equals(id));
+    public String delete(@PathVariable Long id) {
+        bookService.delete(id);
         return "redirect:/book";
     }
 
     @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
-    public String updatePage(@PathVariable UUID id, Model model) {
-        Book searchingBook = books.stream()
-                .filter(book ->
-                        book.getId().equals(id)
-                ).findFirst().orElseThrow(() -> {
-                    throw new NotFoundException("Book not found with given id '%s'".formatted(id));
-                });
-        model.addAttribute("book", searchingBook);
+    public String updatePage(@PathVariable Long id, Model model) {
+        model.addAttribute("book", bookService.get(id));
         return "book/book_update";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String update(@ModelAttribute Book dto) {
-        books.stream()
-                .filter(book -> book.getId().equals(dto.getId()))
-                .forEach(book -> {
-                    book.setTitle(dto.getTitle());
-                    book.setGenre(dto.getGenre());
-                    book.setAuthor(dto.getAuthor());
-                    book.setPublisher(dto.getPublisher());
-                });
+    public String update(@ModelAttribute BookUpdateDTO dto) {
+        bookService.update(dto);
         return "redirect:/book";
     }
 
