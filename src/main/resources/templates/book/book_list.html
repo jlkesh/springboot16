@@ -22,7 +22,7 @@
 
             <th:block th:each="pageNumber : ${pageNumbers}">
                 <li th:class="page-item" th:classappend="${page.number == pageNumber} ? active : ''"><a
-                        class="page-link" th:href="@{'?page=' + ${pageNumber}}"
+                        class="page-link" th:href="@{'?search='+${search}+'&page=' + ${pageNumber}}"
                         th:text="${pageNumber}"></a></li>
             </th:block>
 
@@ -112,7 +112,8 @@
 
 
 <div class="row m-4">
-    <th:block th:each="book : ${page.content}">
+    <th:block th:each="book, counter : ${page.content}">
+<!--        <div th:if="((${counter.current % 5 == 1}))" th:classappend=" offset-1"></div>-->
         <div class="col-2">
             <div class="card p-2" style="width: 100%">
                 <img class="card-img-top" th:src="${book.cover.path}" width="140" height="250" alt="Card image cap">

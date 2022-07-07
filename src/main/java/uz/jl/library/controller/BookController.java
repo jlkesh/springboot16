@@ -12,6 +12,7 @@ import uz.jl.library.dto.BookUpdateDTO;
 import uz.jl.library.enums.Language;
 import uz.jl.library.services.BookService;
 
+import javax.servlet.http.Cookie;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
@@ -29,8 +30,10 @@ public class BookController {
             @RequestParam(name = "page") Optional<Integer> page,
             @RequestParam(name = "limit") Optional<Integer> limit,
             Model model) {
+
         String searchQuery = search.orElse("");
         Page<Book> bookPage = bookService.findAll(searchQuery, page, limit);
+        model.addAttribute("search", searchQuery);
         model.addAttribute("page", bookPage);
         model.addAttribute("pageNumbers", IntStream.range(0, bookPage.getTotalPages()).toArray());
         model.addAttribute("genres", Book.Genre.values());
