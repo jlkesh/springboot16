@@ -1,6 +1,7 @@
 package uz.jl.library.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import uz.jl.library.services.BookService;
 
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/book")
@@ -27,7 +29,10 @@ public class BookController {
             @RequestParam(name = "page") Optional<Integer> page,
             @RequestParam(name = "limit") Optional<Integer> limit,
             Model model) {
-        model.addAttribute("books", bookService.findAll(page, limit));
+        String searchQuery = search.orElse("");
+        Page<Book> bookPage = bookService.findAll(searchQuery, page, limit);
+        model.addAttribute("page", bookPage);
+        model.addAttribute("pageNumbers", IntStream.range(0, bookPage.getTotalPages()).toArray());
         model.addAttribute("genres", Book.Genre.values());
         model.addAttribute("languages", Language.values());
         return "book/book_list";

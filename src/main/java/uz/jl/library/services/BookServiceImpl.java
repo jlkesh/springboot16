@@ -1,5 +1,6 @@
 package uz.jl.library.services;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +16,6 @@ import uz.jl.library.exception.NotFoundException;
 import uz.jl.library.mappers.BookMapper;
 import uz.jl.library.repository.BookRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,11 +57,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findAll(Optional<Integer> pageOptional, Optional<Integer> limitOptional) {
+    public Page<Book> findAll(@NonNull String searchQuery, Optional<Integer> pageOptional, Optional<Integer> limitOptional) {
         int page = pageOptional.orElse(0);
         int size = limitOptional.orElse(10);
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Book> booksPerPage = bookRepository.findAll(pageable);
-        return booksPerPage.get().toList();
+        return bookRepository.findAll(searchQuery.toLowerCase(), pageable);
     }
 }
