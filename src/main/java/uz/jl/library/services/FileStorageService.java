@@ -20,4 +20,5 @@ public interface FileStorageService {
 
     List<Uploads> getAll();
 
+    Uploads uploadCover(MultipartFile fileForCover);
 }

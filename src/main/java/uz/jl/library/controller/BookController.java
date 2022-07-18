@@ -43,9 +43,9 @@ public class BookController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String add(@ModelAttribute BookCreateDTO dto,
-                      @RequestParam("cover") MultipartFile cover,
+//                      @RequestParam("cover") MultipartFile cover,
                       @RequestParam("file") MultipartFile file) {
-        bookService.create(dto, cover, file);
+        bookService.create(dto, null, file);
         return "redirect:/book";
     }
 

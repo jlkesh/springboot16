@@ -1,6 +1,10 @@
 package uz.jl.library.services;
 
 import lombok.NonNull;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -17,6 +21,8 @@ import uz.jl.library.exception.NotFoundException;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -97,5 +103,37 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public List<Uploads> getAll() {
         return repository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public Uploads uploadCover(MultipartFile fileForCover) {
+        try {
+            String contentType = fileForCover.getContentType();
+            String originalFilename = fileForCover.getOriginalFilename();
+            long size = fileForCover.getSize();
+            String filename = StringUtils.getFilename(originalFilename);
+            String filenameExtension = StringUtils.getFilenameExtension(originalFilename);
+            String generatedName = System.currentTimeMillis() + ".png";
+            String path = "/uploads/" + generatedName;
+            Uploads uploads = Uploads
+                    .builder()
+                    .contentType(contentType)
+                    .originalName(filename)
+                    .size(size)
+                    .generatedName(generatedName)
+                    .path(path)
+                    .build();
+            Path uploadPath = rootPath.resolve(generatedName);
+            repository.save(uploads);
+
+            PDDocument document = PDDocument.load(fileForCover.getInputStream());
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+            ImageIOUtil.writeImage(bufferedImage, uploadPath.toString(), 300);
+            return uploads;
+        } catch (IOException e) {
+            throw new RuntimeException("Something wrong try again");
+        }
     }
 }

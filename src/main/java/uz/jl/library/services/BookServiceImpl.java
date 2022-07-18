@@ -17,6 +17,7 @@ import uz.jl.library.mappers.BookMapper;
 import uz.jl.library.repository.BookRepository;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +30,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void create(BookCreateDTO dto, MultipartFile fileForCover, MultipartFile fileForBook) {
-        Uploads cover = fileStorageService.upload(fileForCover);
-        Uploads file = fileStorageService.upload(fileForBook);
-        Book book = mapper.fromCreateDTO(dto);
-        book.setCover(cover);
-        book.setFile(file);
-        bookRepository.save(book);
+        CompletableFuture.runAsync(() -> {
+            Uploads cover = fileStorageService.uploadCover(fileForBook);
+            Uploads file = fileStorageService.upload(fileForBook);
+            Book book = mapper.fromCreateDTO(dto);
+            book.setCover(cover);
+            book.setFile(file);
+            bookRepository.save(book);
+        });
+
     }
 
     @Override
